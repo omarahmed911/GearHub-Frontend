@@ -4,7 +4,6 @@ import popularSearch2 from '../../assets/brand-nissan.webp'
 import popularSearch3 from '../../assets/brand-hyundai.webp'
 import popularSearch4 from '../../assets/brand-honda.webp'
 import popularSearch5 from '../../assets/brand-ford.webp'
-import popularSearch6 from '../../assets/brand-acura.webp'
 
 function Home() {
   return (
@@ -42,10 +41,7 @@ function Home() {
       </div>
 
   <div>
-            <ul>
-              <li>
-            <img src={popularSearch6} alt="Popular Search 6" />
-          </li> 
+            <ul> 
           <li>
             <img src={popularSearch1} alt="Popular Search 1" />
           </li>
@@ -73,15 +69,17 @@ function Home() {
 
     <div className='description-about'>
       <span className='description-title'>
-        Shop Genuine Parts and Accessories
+        Welcome to GearHub
       </span>
 
       <span className='description-subtitle'>
-      at Discounted Pricing
+      your trusted destination for quality auto parts and accessories at competitive prices
       </span>
       <p className='description-text'>
-        At Gear Hub Parts Online, we make it easier to shop for auto parts online. Find the right part at the right price by searching our collection of Gear Hub catalogs by part name, part number, or your VIN. Each brand is powered by our network of dealership parts departments to ensure full inventory availability and fast shipping speeds nationwide.Don't wait longer than you need to for your parts and accessories, shop with Gear Hub Parts Online today. Select your brand to start shopping!
-      </p>
+        At GearHub
+, we make it easy to find the right auto parts and accessories for your vehicle. Shop quality parts by name, part number, or VIN, with reliable sourcing, competitive pricing, and fast nationwide shipping. From maintenance essentials to upgrades, GearHub helps keep your vehicle running at its best.
+        <p>Drive with confidence and keep your vehicle performing at its best with GearHub — where quality, convenience, and value come together.</p>
+        </p>
 
     </div>
 

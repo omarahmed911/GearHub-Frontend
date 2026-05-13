@@ -2,7 +2,7 @@
     width: 100%;
     height: 100vh;
     color: black;
-    background-image: url(../../assets/hero_banner.webp);
+    background-image: url(../../assets/bgimage.webp);
     background-size: cover;
     background-position: center;
     display: flex;
@@ -13,7 +13,7 @@
 }
 .home-content{
     margin-top: 5%;
-    margin-bottom: 15%;
+    margin-bottom: 5%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -89,7 +89,7 @@
 }
 .description-subtitle{
     margin-bottom: 30px;
-    color: #6267ff;
+    color: #ff2828;
     font-family: Inter, sans-serif;
     font-size: 30px;
     font-weight: 500;
@@ -148,4 +148,62 @@
 .bottom-bar a{
     color: #fff;
     margin-left: 10%;
+}
+
+@media (max-width: 768px) {
+    .home-title {
+        font-size: 32px;
+        text-align: center;
+        padding: 0 15px;
+    }
+    .home-description {
+        font-size: 16px;
+        text-align: center;
+        padding: 0 15px;
+    }
+    .search-box {
+        width: 90%;
+        display: flex;
+    }
+    .input-box {
+        width: 70%;
+        padding: 0 10px;
+    }
+    .button-box {
+        width: 30%;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+    .foot-text {
+        font-size: 24px;
+    }
+    .home ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 0;
+    }
+    .home ul li {
+        list-style: none;
+    }
+    .home ul li img {
+        max-width: 60px;
+    }
+    .description-about {
+        height: auto;
+        padding: 40px 15px;
+    }
+    .description-title {
+        font-size: 28px;
+        text-align: center;
+    }
+    .description-subtitle {
+        font-size: 20px;
+        text-align: center;
+    }
+    .description-text {
+        width: 100%;
+        font-size: 15px;
+    }
 }
