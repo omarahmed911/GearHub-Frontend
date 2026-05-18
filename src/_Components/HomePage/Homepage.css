@@ -164,9 +164,10 @@
     .search-box {
         width: 90%;
         display: flex;
+
     }
     .input-box {
-        width: 70%;
+        width: 80%;
         padding: 0 10px;
     }
     .button-box {

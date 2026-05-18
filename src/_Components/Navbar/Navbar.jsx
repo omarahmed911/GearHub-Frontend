@@ -1,4 +1,4 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 import './Navbar.css'
 import logo from '../../assets/logo-parts.webp'
 
@@ -21,16 +21,25 @@ const Navbar = () => {
 
         <ul className='nav-links'>
   <li>
-    <a href="/#">Home</a>
+    <Link to="/">Home</Link>
   </li>
 
   <li>
-    <a href="/#">About</a>
+    <a href="/#about">About</a>
   </li>
 
   <li>
     <a href="/#">Contact</a>
   </li>
+  <li>
+    <Link to="/products">All Products</Link>
+  </li>
+  <li>
+    <Link to="/login">Login</Link>
+  </li>
+  {/* <li>
+    <Link to="/signup">Signup</Link>
+  </li> */}
 
 </ul>
 
@@ -40,26 +49,24 @@ const Navbar = () => {
 <div className='companies-navbar '>
         <ul className='companies-list'>
 
+
     <li>
-    <a href="/#">Audi</a>
+    <Link to="/products">BMW</Link>
     </li>
     <li>
-    <a href="/#">Bmw</a>
+    <Link to="/products">FORD</Link>
     </li>
     <li>
-    <a href="/#">FORD</a>
+    <Link to="/products">Hyundai</Link>
     </li>
     <li>
-    <a href="/#">Hyundai</a>
+    <Link to="/products">Nissan</Link>
     </li>
     <li>
-    <a href="/#">Nissan</a>
+    <Link to="/products">Honda</Link>
     </li>
     <li>
-    <a href="/#">Porsche</a>
-    </li>
-    <li>
-    <a href="/#">Toyota</a>
+    <Link to="/products">Toyota</Link>
     </li>
 
 
