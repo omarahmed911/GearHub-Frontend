@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { loginUser } from './login.js'
+import { loginUser } from '../../../utils/authService'
 import './login.css'
 
 function Login() {
@@ -15,7 +14,8 @@ function Login() {
 
     try {
       const data = await loginUser(email, password);
-      // Redirects the user to the home page when the form is successfully submitted
+      localStorage.setItem('token', data.accessToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
       setErrorMsg('');
       navigate('/');
     } catch (error) {

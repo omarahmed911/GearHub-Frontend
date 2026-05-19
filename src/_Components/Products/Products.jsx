@@ -1,64 +1,126 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "./ProductsApi";
+import "./Products.css";
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    getProducts("")
-      .then((data) => {
-        console.log("API Response:", data); // DEBUG LOG
-        setProducts(Array.isArray(data) ? data : []);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setProducts([]);
-      });
-  }, []);
+    useEffect(() => {
+        getProducts("")
+            .then((data) => {
+                console.log("API Response:", data);
+                setProducts(Array.isArray(data) ? data : []);
+            })
+            .catch((error) => {
+                console.error("Error fetching products:", error);
+                setProducts([]);
+            });
+    }, []);
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-      {Array.isArray(products) && products.length > 0 ? (
-        products.map((product, index) => (
-          <div key={product.id || index} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
-          {/* Product Image */}
-          <img 
-            src={product.image || "https://via.placeholder.com/300"} 
-            alt={product.name || "Product"} 
-            className="w-full h-48 object-cover"
-          />
-          
-          <div className="p-4 flex flex-col flex-grow">
-            {/* Product Name */}
-            <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
-              {product.name || "Product Name"}
-            </h3>
-            
-            {/* Product Description */}
-            <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">
-              {product.description || "Product description goes here. It provides details about the product."}
-            </p>
-            
-            {/* Product Price */}
-            <div className="text-xl font-semibold text-gray-900 mb-4">
-              ${product.price || "0.00"}
+    const hasProducts = Array.isArray(products) && products.length > 0;
+
+    return (
+        <div className="products-page">
+            <div className="products-page__inner">
+                <header className="products-page__header">
+                    <h1 className="products-page__title">All Products</h1>
+                    <p className="products-page__subtitle">
+                        {hasProducts
+                            ? `${products.length} item${products.length === 1 ? "" : "s"} available`
+                            : "Browse our catalog of parts and accessories"}
+                    </p>
+                </header>
+
+                <div className={`products-grid${!hasProducts ? " products-grid--empty" : ""}`}>
+                    {hasProducts ? (
+                        products.map((product, index) => (
+                            <article key={product.id || index} className="products-card">
+                                <div className="products-card__image-wrap">
+                                    <img
+                                        src={
+                                            product.image ||
+                                            product.imageUrl ||
+                                            "https://via.placeholder.com/600"
+                                        }
+                                        alt={product.name || "Product"}
+                                    />
+
+                                    <button
+                                        type="button"
+                                        aria-label="Add to favorites"
+                                        className="products-card__favorite"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            width={18}
+                                            height={18}
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div className="products-card__body">
+                                    <div className="products-card__top">
+                                        <h3 className="products-card__name">
+                                            {product.name || "Product Name"}
+                                        </h3>
+
+                                        {product.category && (
+                                            <span className="products-card__category">
+                                                {product.category}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className="products-card__brand">
+                                        {product.brand || "Brand"}
+                                        {product.model ? `, ${product.model}` : ""}
+                                    </p>
+
+                                    <div className="products-card__meta">
+                                        <span>
+                                            Part No: {product.partNumber || product.id || "N/A"}
+                                        </span>
+                                        <span className="products-card__stock">
+                                            {product.stockQuantity ?? 10} in stock
+                                        </span>
+                                    </div>
+
+                                    <div className="products-card__footer">
+                                        <button type="button" className="products-card__cart-btn">
+                                            Add Cart
+                                        </button>
+
+                                        <p className="products-card__price">
+                                            E£
+                                            {product.price
+                                                ? Number(product.price).toFixed(2)
+                                                : "0.00"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </article>
+                        ))
+                    ) : (
+                        <div className="products-empty">
+                            <p className="products-empty__title">No products found</p>
+                            <p className="products-empty__text">
+                                Check back later or adjust your search filters.
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
-            
-            {/* Add to Cart Button */}
-            <button 
-              className="w-full text-white py-2 px-4 rounded transition-opacity hover:opacity-90 mt-auto font-medium"
-              style={{ backgroundColor: "#EE3E55" }}
-            >
-              Add to cart
-            </button>
-          </div>
         </div>
-        ))
-      ) : (
-        <div className="col-span-full text-center text-gray-500 py-10">
-          No products found.
-        </div>
-      )}
-    </div>
-  );
+    );
 }
+

@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import { z } from 'zod'
-import { registerUser } from './signup.js'
+import { registerUser } from '../../../utils/authService'
 import './signup.css'
 
 const passwordSchema = z.string().refine((val) => {
@@ -41,7 +40,7 @@ function Signup() {
 
     try {
       // Create user with the selected role
-      await registerUser(username, email, password, userType);
+      await registerUser(username, email, password, userType.toUpperCase());
       
       setErrorMsg('');
       // Redirect to login after successful signup

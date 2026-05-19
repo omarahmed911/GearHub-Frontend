@@ -1,23 +1,20 @@
+import api from '../../utils/api';
+
 export async function getProducts(search = "") {
-  const url = search 
-    ? `http://localhost:8080/api/products?search=${encodeURIComponent(search)}` 
-    : 'http://localhost:8080/api/products';
-
-  const response = await fetch(url);
+  const url = search ? `/products?search=${encodeURIComponent(search)}` : '/products';
   
-  if (!response.ok) {
-    throw new Error('Failed to fetch products');
+  const response = await api.get(url);
+  // Unpack wrapping if backend structure provides { success, data }
+  if (response && response.success !== undefined && response.data) {
+    return response.data;
   }
-
-  return response.json();
+  return response;
 }
 
 export async function getProductById(id) {
-  const response = await fetch(`http://localhost:8080/api/products/${id}`);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch product with id: ${id}`);
+  const response = await api.get(`/products/${id}`);
+  if (response && response.success !== undefined && response.data) {
+    return response.data;
   }
-
-  return response.json();
+  return response;
 }
