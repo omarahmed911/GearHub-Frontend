@@ -3,8 +3,8 @@ import { Routes, Route } from 'react-router-dom'
 import Navbar from './_Components/Navbar/Navbar'
 import HomePage from './_Components/HomePage/Home'
 import Footer from './_Components/Footer/Footer'
-import Login from './_Components/(auth)/login/login'
-import Signup from './_Components/(auth)/signup/signup'
+import Login from './_Components/(auth)/login/login.jsx'
+import Signup from './_Components/(auth)/signup/signup.jsx'
 import Products from './_Components/Products/Products'
 
 function App() {
