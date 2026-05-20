@@ -25,7 +25,7 @@ export default function Cart() {
 
   const updateQuantity = async (productId, quantity) => {
     try {
-      await api.put(`/cart/items/${productId}?quantity=${quantity}`);
+      await api.put(`/cart/items/${productId}`, { quantity });
       fetchCart();
     } catch (e) {
       alert('Failed to update cart');
@@ -63,25 +63,25 @@ export default function Cart() {
         <div>
           <div className="space-y-4">
             {cart.items.map(item => (
-              <div key={item.product.id} className="flex justify-between items-center border p-4 rounded bg-white">
+              <div key={item.productId} className="flex justify-between items-center border p-4 rounded bg-white">
                 <div>
-                  <h3 className="font-bold text-lg">{item.product.name}</h3>
-                  <p className="text-gray-600">${item.price.toFixed(2)} x {item.quantity}</p>
+                  <h3 className="font-bold text-lg">{item.productName}</h3>
+                  <p className="text-gray-600">${(item.unitPrice || 0).toFixed(2)} x {item.quantity}</p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-bold">${((item.unitPrice || 0) * item.quantity).toFixed(2)}</span>
                   <div className="flex items-center">
-                    <button onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))} className="bg-gray-200 px-3 py-1">-</button>
+                    <button onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))} className="bg-gray-200 px-3 py-1">-</button>
                     <span className="px-4">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="bg-gray-200 px-3 py-1">+</button>
+                    <button onClick={() => updateQuantity(item.productId, item.quantity + 1)} className="bg-gray-200 px-3 py-1">+</button>
                   </div>
-                  <button onClick={() => removeItem(item.product.id)} className="text-red-500 text-sm">Remove</button>
+                  <button onClick={() => removeItem(item.productId)} className="text-red-500 text-sm">Remove</button>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-8 flex justify-between items-center border-t py-4">
-            <h3 className="text-xl font-bold">Total: ${cart.totalPrice.toFixed(2)}</h3>
+            <h3 className="text-xl font-bold">Total: ${(cart.items.reduce((sum, item) => sum + (item.unitPrice || 0) * item.quantity, 0)).toFixed(2)}</h3>
             <button onClick={checkout} className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">Checkout</button>
           </div>
         </div>

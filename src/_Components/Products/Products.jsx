@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "./ProductsApi";
+import api from "../../utils/api";
 import "./Products.css";
 
 export default function Products() {
@@ -16,6 +17,30 @@ export default function Products() {
                 setProducts([]);
             });
     }, []);
+
+    const handleAddToCart = async (productId) => {
+        try {
+            await api.post('/cart/items', { productId, quantity: 1 });
+            // Removed alert as requested
+        } catch (e) {
+            console.error(e.message || 'Failed to add to cart. Are you logged in?');
+        }
+    };
+
+    const getImageForCategory = (category, name) => {
+        const cat = (category || '').toLowerCase();
+        const n = (name || '').toLowerCase();
+        
+        if (cat.includes('seat') || n.includes('seat')) return "https://images.unsplash.com/photo-1603513470760-49666dd9d560?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('bumper') || n.includes('bumper')) return "https://images.unsplash.com/photo-1594043912165-27a3c31ff7ec?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('engine') || n.includes('engine') || cat.includes('HVAC')) return "https://images.unsplash.com/photo-1625902047385-d6d7ac616147?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('wheel') || cat.includes('tire') || n.includes('wheel')) return "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('light') || n.includes('light')) return "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('mirror') || n.includes('mirror')) return "https://images.unsplash.com/photo-1550346049-74d4df0ee8e6?auto=format&fit=crop&w=600&q=80";
+        if (cat.includes('dashboard') || cat.includes('interior') || n.includes('interior')) return "https://images.unsplash.com/photo-1629897048514-3dd74142fbce?auto=format&fit=crop&w=600&q=80";
+        
+        return "https://images.unsplash.com/photo-1503376760359-f2e152d192f1?auto=format&fit=crop&w=600&q=80"; // Default auto parts
+    }
 
     const hasProducts = Array.isArray(products) && products.length > 0;
 
@@ -40,7 +65,7 @@ export default function Products() {
                                         src={
                                             product.image ||
                                             product.imageUrl ||
-                                            "https://via.placeholder.com/600"
+                                            getImageForCategory(product.category, product.name)
                                         }
                                         alt={product.name || "Product"}
                                     />
@@ -96,7 +121,7 @@ export default function Products() {
                                     </div>
 
                                     <div className="products-card__footer">
-                                        <button type="button" className="products-card__cart-btn">
+                                        <button type="button" className="products-card__cart-btn" onClick={() => handleAddToCart(product.id)}>
                                             Add Cart
                                         </button>
 

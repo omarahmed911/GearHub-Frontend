@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
 
+const CATEGORIES = [
+  { group: "🪑 Seats & Upholstery", items: ["Front Seats", "Rear Seats", "Seat Covers", "Foam & Cushioning", "Headrests"] },
+  { group: "🎛️ Dashboard & Controls", items: ["Dashboard Panels", "Instrument Cluster", "Steering Wheel", "Gear Shift Knob", "Center Console"] },
+  { group: "❄️ HVAC System", items: ["Air Conditioning Vents", "Blower Motor", "AC Controls", "Cabin Filter"] },
+  { group: "🔌 Electrical Interior", items: ["Interior Lights", "Switches", "Wiring Harness", "Sensors"] },
+  { group: "🚪 Doors & Interior Panels", items: ["Door Panels", "Door Handles", "Window Mechanism", "Lock System"] },
+  { group: "🧳 Storage & Comfort", items: ["Glove Box", "Armrest", "Cup Holders", "Interior Trim"] },
+  { group: "🛡️ Body Panels", items: ["Front Bumper", "Rear Bumper", "Hood / Bonnet", "Fenders", "Doors", "Roof Panels"] },
+  { group: "💡 Lighting System", items: ["Headlights", "Taillights", "Fog Lights", "Turn Signals", "Daytime Running Lights (DRL)"] },
+  { group: "🪞 Mirrors & Glass", items: ["Side Mirrors", "Rear View Mirror", "Windshield", "Side Windows", "Rear Glass"] },
+  { group: "🛞 Wheels & Tires", items: ["Alloy Wheels", "Steel Wheels", "Tires", "Wheel Caps", "Lug Nuts"] },
+  { group: "🔩 Exterior Accessories", items: ["Roof Rack", "Spoilers", "Mudguards", "Body Kits", "Tow Hook"] },
+  { group: "⚙️ Exterior Mechanical Elements", items: ["Radiator Grill", "Engine Cover", "Underbody Shields"] }
+];
+
 export default function TraderPanel() {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState('');
@@ -58,9 +73,16 @@ export default function TraderPanel() {
         <form onSubmit={handleAddProduct} className="flex flex-col gap-4">
           <div className="flex gap-4">
             <input placeholder="Product Name" value={name} onChange={e=>setName(e.target.value)} className="border p-2 flex-grow" required />
-            <input placeholder="Price" type="number" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} className="border p-2 w-32" required />
-            <input placeholder="Category" value={category} onChange={e=>setCategory(e.target.value)} className="border p-2 w-48" required />
-            <input title="Stock Quantity" type="number" value={stockQuantity} onChange={e=>setStockQuantity(e.target.value)} className="border p-2 w-32" required />
+            <input placeholder="Price" type="number" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} className="border p-2 w-32 rounded" required />
+            <select value={category} onChange={e=>setCategory(e.target.value)} className="border p-2 w-48 rounded bg-white" required>
+              <option value="" disabled>Select Category</option>
+              {CATEGORIES.map(group => (
+                <optgroup key={group.group} label={group.group}>
+                  {group.items.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </optgroup>
+              ))}
+            </select>
+            <input title="Stock Quantity" type="number" value={stockQuantity} onChange={e=>setStockQuantity(e.target.value)} className="border p-2 w-32 rounded" required />
           </div>
           <textarea placeholder="Description" value={description} onChange={e=>setDescription(e.target.value)} className="border p-2 w-full" rows="3" required></textarea>
           <button type="submit" className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-700 w-48 rounded">Publish Product</button>

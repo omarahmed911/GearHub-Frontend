@@ -32,16 +32,12 @@ const Navbar = () => {
         <li><Link to="/products">All Products</Link></li>
         {isLoggedIn ? (
           <>
-            {user.role === 'TRADER' ? (
-              <li><Link to="/trader">Trader Panel</Link></li>
-            ) : (
-              <>
-                <li><Link to="/orders">My Orders</Link></li>
-                <li><Link to="/cart">Cart</Link></li>
-              </>
-            )}
+            {user.role === 'TRADER' && <li><Link to="/trader">Trader Panel</Link></li>}
+            {user.role === 'ADMIN' && <li><Link to="/trader">Admin Panel</Link></li>}
+            <li><Link to="/orders">Orders</Link></li>
+            {user.role !== 'TRADER' && <li><Link to="/cart">Cart</Link></li>}
             <li>
-              <button onClick={handleLogout} className="text-white hover:text-gray-200">Logout</button>
+              <button onClick={handleLogout} className="text-black hover:text-gray-700">Logout</button>
             </li>
           </>
         ) : (
@@ -53,39 +49,27 @@ const Navbar = () => {
     </div>
     <div className='companies'>
 
-<div className='companies-navbar '>
+    <div className='companies-navbar '>
         <ul className='companies-list'>
 
-
     <li>
-    <Link to="/products">BMW</Link>
+    <Link to="/products">Interior</Link>
     </li>
     <li>
-    <Link to="/products">FORD</Link>
+    <Link to="/products">Exterior</Link>
     </li>
     <li>
-    <Link to="/products">Hyundai</Link>
+    <Link to="/products">Body Panels</Link>
     </li>
     <li>
-    <Link to="/products">Nissan</Link>
+    <Link to="/products">Wheels & Tires</Link>
     </li>
     <li>
-    <Link to="/products">Honda</Link>
+    <Link to="/products">Lighting</Link>
     </li>
     <li>
-    <Link to="/products">Toyota</Link>
+    <Link to="/products">HVAC</Link>
     </li>
-
-
-
-
-
-
-
-
-
-
-
 
         </ul>
 
