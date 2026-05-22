@@ -11,6 +11,14 @@ export async function getProducts(search = "") {
   return response;
 }
 
+export async function getProductsByBrand(brand) {
+  const response = await api.get(`/products/${encodeURIComponent(brand)}`);
+  if (response && response.success !== undefined && response.data) {
+    return response.data;
+  }
+  return response;
+}
+
 export async function getProductById(id) {
   const response = await api.get(`/products/${id}`);
   if (response && response.success !== undefined && response.data) {

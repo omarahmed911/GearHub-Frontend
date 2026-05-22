@@ -23,7 +23,7 @@ function Home() {
   };
 
   const handleBrandClick = (brandName) => {
-    navigate(`/products?search=${encodeURIComponent(brandName)}`);
+    navigate(`/products/${encodeURIComponent(brandName)}`);
   };
 
   return (

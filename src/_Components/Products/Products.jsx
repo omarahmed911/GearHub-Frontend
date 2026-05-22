@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { getProducts } from "./ProductsApi";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
+import { getProducts, getProductsByBrand } from "./ProductsApi";
 import api from "../../utils/api";
 import { FiHeart, FiShoppingCart, FiSearch, FiSliders, FiTag, FiCheckCircle, FiInfo } from "react-icons/fi";
 import "./Products.css";
@@ -13,6 +13,7 @@ const CATEGORIES = [
 
 export default function Products() {
   const navigate = useNavigate();
+  const { brand } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,15 +25,24 @@ export default function Products() {
   useEffect(() => {
     const urlQuery = searchParams.get("search") || "";
     setSearchQuery(urlQuery);
-    fetchData(urlQuery);
-  }, [searchParams]);
+    fetchData(brand, urlQuery);
+  }, [searchParams, brand]);
 
-  const fetchData = (query) => {
+  const fetchData = async (brandParam, queryParam) => {
     setLoading(true);
-    getProducts(query)
-      .then((data) => setProducts(Array.isArray(data) ? data : []))
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
+    try {
+      let data;
+      if (brandParam) {
+        data = await getProductsByBrand(brandParam);
+      } else {
+        data = await getProducts(queryParam);
+      }
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearchSubmit = (e) => {
@@ -95,7 +105,9 @@ export default function Products() {
         {/* Header row */}
         <div className="products-header">
           <div>
-            <h1 className="products-page__title">Explore Auto Directory</h1>
+            <h1 className="products-page__title">
+              {brand ? `${brand} Auto Parts` : "Explore Auto Directory"}
+            </h1>
             <p className="products-page__subtitle">
               {hasProducts ? `${products.length} parts found` : "Premium OEM and aftermarket components."}
             </p>
