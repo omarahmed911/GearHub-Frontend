@@ -6,7 +6,7 @@ import {
   FiTruck, FiShield, FiAward
 } from 'react-icons/fi';
 import './Footer.css';
-import logo from '../../assets/logo-parts.webp';
+import logo from '../../assets/logo-parts.png';
 
 function Footer() {
   const [email, setEmail] = useState('');
