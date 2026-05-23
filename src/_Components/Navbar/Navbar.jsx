@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { logoutUser } from '../../utils/authService';
 import { FiHome, FiShoppingBag, FiShoppingCart, FiInbox, FiSettings, FiLogOut, FiUser } from 'react-icons/fi';
 import './Navbar.css';
-import logo from '../../assets/logo-parts.webp';
+import logo from '../../assets/logo-parts.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -85,19 +85,19 @@ const Navbar = () => {
         </nav>
       </div>
 
-      {/* Sub-categories bar — hidden on auth pages */}
-      {!isAuthPage && (
-        <div className="sub-navbar">
-          <div className="sub-navbar-inner">
-            <Link to="/products" className="sub-nav-link">Interior</Link>
-            <Link to="/products" className="sub-nav-link">Exterior</Link>
-            <Link to="/products" className="sub-nav-link">Body Panels</Link>
-            <Link to="/products" className="sub-nav-link">Wheels &amp; Tires</Link>
-            <Link to="/products" className="sub-nav-link">Lighting</Link>
-            <Link to="/products" className="sub-nav-link">HVAC</Link>
-          </div>
-        </div>
-      )}
+      {/*/!* Sub-categories bar — hidden on auth pages *!/*/}
+      {/*{!isAuthPage && (*/}
+      {/*  <div className="sub-navbar">*/}
+      {/*    <div className="sub-navbar-inner">*/}
+      {/*      <Link to="/products" className="sub-nav-link">Interior</Link>*/}
+      {/*      <Link to="/products" className="sub-nav-link">Exterior</Link>*/}
+      {/*      <Link to="/products" className="sub-nav-link">Body Panels</Link>*/}
+      {/*      <Link to="/products" className="sub-nav-link">Wheels &amp; Tires</Link>*/}
+      {/*      <Link to="/products" className="sub-nav-link">Lighting</Link>*/}
+      {/*      <Link to="/products" className="sub-nav-link">HVAC</Link>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </header>
   );
 };
