@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { getProducts, getProductsByBrand } from "./ProductsApi";
 import api from "../../utils/api";
-import { FiHeart, FiShoppingCart, FiSearch, FiSliders, FiTag, FiCheckCircle, FiInfo } from "react-icons/fi";
+import {  FiShoppingCart, FiSearch, FiSliders, FiTag, FiCheckCircle, FiInfo } from "react-icons/fi";
 import "./Products.css";
 
 const CATEGORIES = [
@@ -17,25 +17,23 @@ export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+  
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [favorites, setFavorites] = useState({});
   const [cartStatus, setCartStatus] = useState({});
 
-  useEffect(() => {
-    const urlQuery = searchParams.get("search") || "";
-    setSearchQuery(urlQuery);
-    fetchData(brand, urlQuery);
-  }, [searchParams, brand]);
-
-  const fetchData = async (brandParam, queryParam) => {
+  const fetchData = async (brandParam) => {
     setLoading(true);
     try {
       let data;
       if (brandParam) {
         data = await getProductsByBrand(brandParam);
       } else {
-        data = await getProducts(queryParam);
+        // Fetch all to enable instant client-side filtering
+        data = await getProducts("");
       }
       setProducts(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -45,17 +43,50 @@ export default function Products() {
     }
   };
 
+  // 1. Fetch all products on mount or when the brand changes
+  useEffect(() => {
+    fetchData(brand);
+  }, [brand]);
+
+  // 2. Debounce the search query to optimize performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300); // 300ms debounce
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // 3. Keep URL search query in sync for shareable links
+  useEffect(() => {
+    const currentUrlParam = searchParams.get("search") || "";
+    if (debouncedQuery !== currentUrlParam) {
+      if (debouncedQuery) {
+        setSearchParams({ search: debouncedQuery });
+      } else {
+        setSearchParams({});
+      }
+    }
+  }, [debouncedQuery, searchParams, setSearchParams]);
+
+  // 4. Update selected category based on searchParams on initial load
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query && CATEGORIES.includes(query)) {
+      setSelectedCategory(query);
+    }
+  }, [searchParams]);
+
   const handleSearchSubmit = (e) => {
+    // Prevent page reload layout jump, filtering is live now
     e.preventDefault();
-    setSearchParams({ search: searchQuery });
   };
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     if (category === "All Categories") {
-      setSearchParams({});
+      setSearchQuery("");
     } else {
-      setSearchParams({ search: category });
+      setSearchQuery(category);
     }
   };
 
@@ -96,7 +127,19 @@ export default function Products() {
     return "https://images.unsplash.com/photo-1503376760359-f2e152d192f1?auto=format&fit=crop&w=600&q=80";
   };
 
-  const hasProducts = Array.isArray(products) && products.length > 0;
+  // Derive filtered products instantly based on the debounced search query
+  const displayedProducts = products.filter((product) => {
+    if (!debouncedQuery) return true;
+    const lowerQuery = debouncedQuery.toLowerCase();
+    return (
+      (product.name && product.name.toLowerCase().includes(lowerQuery)) ||
+      (product.category && product.category.toLowerCase().includes(lowerQuery)) ||
+      (product.brand && product.brand.toLowerCase().includes(lowerQuery)) ||
+      (product.description && product.description.toLowerCase().includes(lowerQuery))
+    );
+  });
+
+  const hasProducts = Array.isArray(displayedProducts) && displayedProducts.length > 0;
 
   return (
     <div className="products-page">
@@ -109,7 +152,7 @@ export default function Products() {
               {brand ? `${brand} Auto Parts` : "Explore Auto Directory"}
             </h1>
             <p className="products-page__subtitle">
-              {hasProducts ? `${products.length} parts found` : "Premium OEM and aftermarket components."}
+              {hasProducts ? `${displayedProducts.length} parts found` : "Premium OEM and aftermarket components."}
             </p>
           </div>
           <form onSubmit={handleSearchSubmit} className="products-search-bar">
@@ -162,7 +205,7 @@ export default function Products() {
               </div>
             ) : hasProducts ? (
               <div className="products-grid">
-                {products.map((product, index) => {
+                {displayedProducts.map((product, index) => {
                   const isFavorited = !!favorites[product.id];
                   const addStatus = cartStatus[product.id];
 
@@ -174,16 +217,9 @@ export default function Products() {
                           alt={product.name || "Product"}
                           loading="lazy"
                         />
-                        <div className="image-overlay"></div>
-                        <button
-                          type="button"
-                          onClick={() => toggleFavorite(product.id)}
-                          className={`products-card__favorite ${isFavorited ? 'products-card__favorite--active' : ''}`}
-                          aria-label="Favourite"
-                        >
-                          <FiHeart />
-                        </button>
-                      </div>
+                          <div className="image-overlay"></div>
+                          
+                        </div>
 
                       <div className="products-card__body">
                         <div className="products-card__top">

@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../../utils/authService';
-import { FiMail, FiLock, FiLogIn, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiLock, FiLogIn, FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
 import './login.css';
 
 function Login() {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const email = e.target.emailOrUsername.value;
+    const usernameOrEmail = e.target.emailOrUsername.value;
     const password = e.target.password.value;
     try {
       setLoading(true);
       setErrorMsg('');
-      const data = await loginUser(email, password);
+      const data = await loginUser(usernameOrEmail, password);
       localStorage.setItem('token', data.accessToken);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/');
@@ -48,13 +49,13 @@ function Login() {
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="form-field">
             <label htmlFor="emailOrUsername" className="auth-label">
-              <FiMail /> Email or Username
+              <FiMail /> Username or Email
             </label>
             <input
               id="emailOrUsername"
               name="emailOrUsername"
               type="text"
-              placeholder="Enter email or username"
+              placeholder="Enter username or email"
               className="auth-input"
               required
             />
@@ -64,14 +65,24 @@ function Login() {
             <label htmlFor="password" className="auth-label">
               <FiLock /> Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              className="auth-input"
-              required
-            />
+            <div className="password-input-wrapper">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="auth-input"
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
 
           <button type="submit" disabled={loading} className="auth-submit-btn">

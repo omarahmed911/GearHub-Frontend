@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import api from '../../utils/api';
 import {
   FiPackage,
@@ -67,6 +67,105 @@ function getCategoryImage(category, name) {
 
 function formatPrice(value) {
   return Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function CustomCategorySelect({ category, setCategory, id }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredCategories = CATEGORIES.map((group) => {
+    const filteredItems = group.items.filter((item) =>
+      item.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return { ...group, items: filteredItems };
+  }).filter((group) => group.items.length > 0);
+
+  const handleSelect = (item) => {
+    setCategory(item);
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
+  return (
+    <div className="trader-custom-select relative w-full" ref={dropdownRef}>
+      <button
+        id={id}
+        type="button"
+        className="trader-field__select flex items-center justify-between cursor-pointer w-full text-left"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <span className={category ? 'text-white' : 'text-gray-400'}>
+          {category || 'Select category'}
+        </span>
+        <FiArrowDown
+          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          style={{ opacity: 0.6 }}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="trader-custom-select__dropdown absolute z-50 w-full mt-2 rounded-xl shadow-xl overflow-hidden flex flex-col origin-top animate-fade-in">
+          <div className="trader-custom-select__search flex items-center gap-2 sticky top-0">
+            <FiSearch style={{ color: '#9ca3af' }} className="flex-shrink-0" />
+            <input
+              type="text"
+              className="w-full bg-transparent border-none outline-none text-sm text-white placeholder-gray-500"
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          
+          <div className="trader-custom-select__list overflow-y-auto overflow-x-hidden p-2">
+            {filteredCategories.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-500">
+                No categories found matching "{searchQuery}"
+              </div>
+            ) : (
+              filteredCategories.map((group) => (
+                <div key={group.group} className="mb-2 last:mb-0">
+                  <div className="px-3 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {group.group}
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    {group.items.map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        className={`w-full text-left px-4 py-2 text-sm rounded-md transition-colors flex items-center justify-between ${
+                          category === item
+                            ? 'trader-custom-select__item--active'
+                            : 'trader-custom-select__item'
+                        }`}
+                        onClick={() => handleSelect(item)}
+                      >
+                        {item}
+                        {category === item && <FiCheck className="text-blue-400" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function TraderPanel() {
@@ -372,24 +471,7 @@ export default function TraderPanel() {
                 <label className="trader-field__label" htmlFor="trader-category">
                   <FiTag aria-hidden="true" /> Category
                 </label>
-                <select
-                  id="trader-category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="trader-field__select"
-                  required
-                >
-                  <option value="">Select category</option>
-                  {CATEGORIES.map((group) => (
-                    <optgroup key={group.group} label={group.group}>
-                      {group.items.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
+                <CustomCategorySelect id="trader-category" category={category} setCategory={setCategory} />
               </div>
             </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { registerUser } from '../../../utils/authService';
-import { FiUser, FiMail, FiLock, FiUserPlus, FiAlertCircle } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiUserPlus, FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
 import './signup.css';
 
 const passwordSchema = z.string().refine((val) => (
@@ -14,6 +14,7 @@ function Signup() {
   const [userType, setUserType] = useState('customer');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -90,15 +91,25 @@ function Signup() {
             <label htmlFor="password" className="auth-label">
               <FiLock /> Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Min. 8 characters"
-              className="auth-input"
-              required
-              minLength="8"
-            />
+            <div className="password-input-wrapper">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Min. 8 characters"
+                className="auth-input"
+                required
+                minLength="8"
+              />
+              <button
+                type="button"
+                className="password-toggle-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
 
           <div className="form-field">
